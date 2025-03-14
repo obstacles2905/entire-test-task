@@ -1,98 +1,79 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Ticketing Platform Test Assignment
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This project is a test assignment for building a ticketing platform that sells tickets for events. 
+The application features an admin panel for Promoters, enabling them to set up events and create different ticket tiers with detailed pricing information. 
+Buyers purchase tickets through the platform, and the platform collects a commission fee for its services.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Features
 
-## Description
+- **TicketTier Entity**
+    - Contains the following pricing fields:
+        - **buyerPrice:** The retail price paid by the buyer.
+        - **serviceFee:** The commission fee taken by the platform.
+        - **promoterReceivesPrice:** The amount the promoter receives after deducting the commission.
+    - Provides CRUD endpoints (except delete) for managing TicketTier records.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **Price Calculation Endpoint**
+    - Calculates pricing fields based on either the buyer price or the promoter receives price.
+    - Uses a fee model where the service fee is a percentage of the buyer price and cannot be lower than a defined minimum fee.
 
-## Project setup
+- **Fee Setting**
+    - Global settings for fee calculation are maintained in a single FeeSetting record.
+    - Provides endpoints to retrieve and upsert (create/update) fee settings.
 
-```bash
-$ npm install
-```
+- **Validation and Documentation**
+    - Input validation is implemented using `class-validator`.
+    - Swagger/OpenAPI documentation is automatically generated and available for easy API exploration.
 
-## Compile and run the project
+- **Dockerized Environment**
+    - The application is containerized using Docker and Docker Compose.
+    - PostgreSQL is used as the database, and its container is managed via Docker Compose.
 
-```bash
-# development
-$ npm run start
+## Prerequisites
 
-# watch mode
-$ npm run start:dev
+- **Node.js** (v16 or higher)
+- **npm**
+- **Docker** and **Docker Compose**
 
-# production mode
-$ npm run start:prod
-```
+## Setup
 
-## Run tests
+1. **Clone the repository:**
 
-```bash
-# unit tests
-$ npm run test
+   ```bash
+   git clone <repository-url>
+   cd <repository-directory>
 
-# e2e tests
-$ npm run test:e2e
+2. **Install dependencies:**
+   ```bash
+   npm install
+   
+3. **Configure environment variables:**
+   - Create a .env file in the root directory with the following content (adjust values as needed):
+   ```bash
+    DATABASE_URL=postgresql://postgres:postgres@db:5432/mydb?schema=public
+    PORT=3000
+   
+## Running the Application
 
-# test coverage
-$ npm run test:cov
-```
+You can run the application using Docker Compose, which will build and start both the application and the PostgreSQL container.
 
-## Deployment
+1. **Start the containers:**
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+   ```bash
+   docker-compose up --build
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+2. **Perform Prisma migrations:**
+   - Open a new terminal window and run the following command to apply the Prisma migrations:
+   ```bash
+   docker-compose exec app npx prisma migrate dev --name init
+   
+3. **Access the API:**
+ - The API is available at `http://localhost:3000`.
+ - Swagger documentation is accessible at: http://localhost:3000/swagger
 
-```bash
-$ npm install -g mau
-$ mau deploy
-```
+## Running unit tests
+ - To execute the unit tests, run:
+   ```bash
+   npm run test
+ - This command will run all tests and ensure that the price calculation logic behaves as expected.
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
