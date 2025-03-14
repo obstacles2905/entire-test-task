@@ -31,7 +31,7 @@ Buyers purchase tickets through the platform, and the platform collects a commis
 
 ## Prerequisites
 
-- **Node.js** (v16 or higher)
+- **Node.js** (v20 or higher)
 - **npm**
 - **Docker** and **Docker Compose**
 
@@ -50,7 +50,7 @@ Buyers purchase tickets through the platform, and the platform collects a commis
 3. **Configure environment variables:**
    - Create a .env file in the root directory with the following content (adjust values as needed):
    ```bash
-    DATABASE_URL=postgresql://postgres:postgres@db:5432/mydb?schema=public
+    DATABASE_URL=postgresql://user:password@host:port/db?schema=schema
     PORT=3000
    
 ## Running the Application
